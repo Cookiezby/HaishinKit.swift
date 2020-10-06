@@ -3,6 +3,7 @@ import HaishinKit
 import Photos
 import UIKit
 import VideoToolbox
+import MetalKit
 
 final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
     static let `default` = ExampleRecorderDelegate()
@@ -37,6 +38,17 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var audioBitrateSlider: UISlider!
     @IBOutlet private weak var fpsControl: UISegmentedControl!
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
+    
+    private var renderPipelineState: MTLRenderPipelineState?
+    
+    private lazy var metalView: MTKView = {
+        let view = MTKView(frame: .zero, device: self.metalDevice)
+        view.colorPixelFormat = .bgra8Unorm
+        view.contentScaleFactor = UIScreen.main.scale
+        view.delegate = self
+        self.view.addSubview(view)
+        return view
+    }()
 
     private var rtmpConnection = RTMPConnection()
     private var rtmpStream: RTMPStream!
@@ -45,22 +57,43 @@ final class LiveViewController: UIViewController {
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
 
+    let metalDevice: MTLDevice = MTLCreateSystemDefaultDevice()!
+    private let videoSize = CGSize(width: 180, height: 320)
+    private lazy var compositionFilter: CompositionCameraFilter = {
+        return CompositionCameraFilter(device: metalDevice, outputSize: videoSize)
+    }()
+    
+    private lazy var testFilter: TestFilter = {
+        return TestFilter(device: metalDevice, outputSize: videoSize)
+    }()
+    
+    private lazy var commandQueue: MTLCommandQueue = {
+        metalDevice.makeCommandQueue()!
+    }()
+    private var pixelBuffer: CVPixelBuffer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        initRenderPipelineState()
+        
+        view.addSubview(metalView)
+        metalView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+        
         rtmpStream = RTMPStream(connection: rtmpConnection)
+        rtmpStream.setMetalDevice(metalDevice: self.metalDevice)
+        
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.orientation = orientation
         }
-        rtmpStream.captureSettings = [
-            .sessionPreset: AVCaptureSession.Preset.hd1280x720,
-            .continuousAutofocus: true,
-            .continuousExposure: true
-            // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
-        ]
+//        rtmpStream.captureSettings = [
+//            .sessionPreset: AVCaptureSession.Preset.hd1280x720,
+//            .continuousAutofocus: true,
+//            .continuousExposure: true
+//            .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
+//        ]
         rtmpStream.videoSettings = [
-            .width: 720,
-            .height: 1280
+            .width: 180,
+            .height: 320
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 
@@ -70,17 +103,49 @@ final class LiveViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        
+        pixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height))
+    }
+    
+    func initRenderPipelineState() {
+        guard let library = metalDevice.makeDefaultLibrary() else { return }
+        let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.sampleCount = 1
+        pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        pipelineDescriptor.depthAttachmentPixelFormat = .invalid
+        
+        pipelineDescriptor.vertexFunction = library.makeFunction(name: "mapTexture")
+        pipelineDescriptor.fragmentFunction = library.makeFunction(name: "displayTexture")
+        
+        do {
+            try renderPipelineState  = metalDevice.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch {
+            assertionFailure("Failed creating a render state pipeline. Can't render the texture without one.")
+            return
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            logger.warn(error.description)
+//        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+//            logger.warn(error.description)
+//        }
+//        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
+//            logger.warn(error.description)
+//        }
+        
+        rtmpStream.attachComposite { [weak self] (back, front) -> CVPixelBuffer? in
+            guard let self = self else { return nil }
+            guard let commandBuffer = self.commandQueue.makeCommandBuffer() else { return nil }
+            self.compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: back, foregroundTexture: front)
+            if let emptyPixelBuffer = self.pixelBuffer,
+               let pixelBuffer = self.testFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
+                return pixelBuffer
+            }
+            return nil
         }
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
-            logger.warn(error.description)
-        }
+        
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
     }
@@ -97,9 +162,9 @@ final class LiveViewController: UIViewController {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
         rtmpStream.captureSettings[.isVideoMirrored] = position == .front
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
-            logger.warn(error.description)
-        }
+//        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
+//            logger.warn(error.description)
+//        }
         currentPosition = position
     }
 
@@ -120,6 +185,18 @@ final class LiveViewController: UIViewController {
             rtmpStream.setZoomFactor(CGFloat(slider.value), ramping: true, withRate: 5.0)
         }
     }
+    
+    func createPixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
+       var pixelBuffer: CVPixelBuffer?
+       let status = CVPixelBufferCreate(nil, width, height,
+                                        kCVPixelFormatType_32BGRA, nil,
+                                        &pixelBuffer)
+       if status != kCVReturnSuccess {
+           print("Error: could not create resized pixel buffer", status)
+           return nil
+       }
+       return pixelBuffer
+   }
 
     @IBAction func on(pause: UIButton) {
         rtmpStream.paused.toggle()
@@ -236,5 +313,42 @@ final class LiveViewController: UIViewController {
         if Thread.isMainThread {
             currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
         }
+    }
+}
+
+extension LiveViewController: MTKViewDelegate {
+    func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+    
+    func draw(in view: MTKView) {
+        guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
+        guard let frontTexture = rtmpStream.testVideoIO.frontCameraTexture else { return }
+        guard let backTexture = rtmpStream.testVideoIO.backCameraTexture else { return }
+        compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: frontTexture)
+        //render(texture: compositionFilter.outputTexture, withCommandBuffer: commandBuffer, device: metalDevice)
+        commandBuffer.commit()
+      
+        if let emptyPixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height)),
+           let pixelBuffer = compositionFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
+            rtmpStream.testVideoIO.encode(buffer: pixelBuffer)
+        }
+
+    }
+    
+    private func render(texture: MTLTexture, withCommandBuffer commandBuffer: MTLCommandBuffer, device: MTLDevice) {
+        guard let currentRenderPassDescriptor = metalView.currentRenderPassDescriptor,
+              let currentDrawable = metalView.currentDrawable,
+              let renderPipelineState = renderPipelineState,
+              let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) else {
+            return
+        }
+        
+        encoder.setRenderPipelineState(renderPipelineState)
+        encoder.setFragmentTexture(texture, index: 0)
+        encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: 1)
+        encoder.endEncoding()
+        
+        commandBuffer.addScheduledHandler { _ in }
+        commandBuffer.present(currentDrawable)
+        commandBuffer.commit()
     }
 }

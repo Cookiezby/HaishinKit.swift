@@ -342,6 +342,19 @@
 		29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5222FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
+		2CF607C42529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607C32529B51F00B9BC5E /* MultiVideoIOComponent.swift */; };
+		2CF607C52529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607C32529B51F00B9BC5E /* MultiVideoIOComponent.swift */; };
+		2CF607C62529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607C32529B51F00B9BC5E /* MultiVideoIOComponent.swift */; };
+		2CF607CC2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607CB2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift */; };
+		2CF607CD2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607CB2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift */; };
+		2CF607CE2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF607CB2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift */; };
+		2CF60831252A24C100B9BC5E /* CompositionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF60824252A245000B9BC5E /* CompositionFilter.swift */; };
+		2CF6083E252A24C600B9BC5E /* VertexIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF6082B252A246900B9BC5E /* VertexIn.swift */; };
+		2CF60843252A24CA00B9BC5E /* PassThroughFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF60823252A245000B9BC5E /* PassThroughFilter.swift */; };
+		2CF6084C252A24CE00B9BC5E /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 2CF6081B252A242500B9BC5E /* PassThrough.metal */; };
+		2CF60855252A24D200B9BC5E /* Texture.metal in Sources */ = {isa = PBXBuildFile; fileRef = 2CF6081C252A242600B9BC5E /* Texture.metal */; };
+		2CF6085C252A250800B9BC5E /* MTLTexture+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF6085A252A250800B9BC5E /* MTLTexture+Extension.swift */; };
+		2CF6085D252A250800B9BC5E /* CVPixelBuffer+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF6085B252A250800B9BC5E /* CVPixelBuffer+Helper.swift */; };
 		BC20DF2C2503747E007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
 		BC20DF2D25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
 		BC20DF2E25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
@@ -654,6 +667,15 @@
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPHandshake.swift; sourceTree = "<group>"; };
 		29F97F232336A4FA00A4C317 /* SettingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTests.swift; sourceTree = "<group>"; };
 		29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionPropertyKey.swift; sourceTree = "<group>"; };
+		2CF607C32529B51F00B9BC5E /* MultiVideoIOComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiVideoIOComponent.swift; sourceTree = "<group>"; };
+		2CF607CB2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MultiVideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
+		2CF6081B252A242500B9BC5E /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
+		2CF6081C252A242600B9BC5E /* Texture.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Texture.metal; sourceTree = "<group>"; };
+		2CF60823252A245000B9BC5E /* PassThroughFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PassThroughFilter.swift; sourceTree = "<group>"; };
+		2CF60824252A245000B9BC5E /* CompositionFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompositionFilter.swift; sourceTree = "<group>"; };
+		2CF6082B252A246900B9BC5E /* VertexIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexIn.swift; sourceTree = "<group>"; };
+		2CF6085A252A250800B9BC5E /* MTLTexture+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLTexture+Extension.swift"; sourceTree = "<group>"; };
+		2CF6085B252A250800B9BC5E /* CVPixelBuffer+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Helper.swift"; sourceTree = "<group>"; };
 		BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKPictureInPicureControllerPosition.swift; sourceTree = "<group>"; };
 		BC20DF33250374EA007BC608 /* HKPictureInPicureController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HKPictureInPicureController+Extension.swift"; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioConverter.AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.AudioBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -889,6 +911,7 @@
 		2945CBBF1B4BE66000104112 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				2CF607FF252A127400B9BC5E /* Shader */,
 				290907CD1C3961AD00F2E80C /* Codec */,
 				29EA87D11E799EFF0043A5F8 /* Extension */,
 				295891081EEB8B1D00CE51E1 /* FLV */,
@@ -998,6 +1021,7 @@
 		2968973F1CDB01AD0074D5F0 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2CF60804252A23DF00B9BC5E /* Test */,
 				296897431CDB01D20074D5F0 /* Info.plist */,
 				291F4E361CF206E200F59C51 /* Icon.png */,
 				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
@@ -1066,6 +1090,7 @@
 				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
 				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
 				29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */,
+				2CF607CB2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1092,6 +1117,7 @@
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
 				29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */,
+				2CF607C32529B51F00B9BC5E /* MultiVideoIOComponent.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1168,6 +1194,27 @@
 				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		2CF607FF252A127400B9BC5E /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shader;
+			sourceTree = "<group>";
+		};
+		2CF60804252A23DF00B9BC5E /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				2CF6085B252A250800B9BC5E /* CVPixelBuffer+Helper.swift */,
+				2CF6085A252A250800B9BC5E /* MTLTexture+Extension.swift */,
+				2CF6082B252A246900B9BC5E /* VertexIn.swift */,
+				2CF60824252A245000B9BC5E /* CompositionFilter.swift */,
+				2CF60823252A245000B9BC5E /* PassThroughFilter.swift */,
+				2CF6081B252A242500B9BC5E /* PassThrough.metal */,
+				2CF6081C252A242600B9BC5E /* Texture.metal */,
+			);
+			path = Test;
 			sourceTree = "<group>";
 		};
 		BC20DF2A25037454007BC608 /* PiP */ = {
@@ -1387,7 +1434,6 @@
 				TargetAttributes = {
 					2915EC511D85BDF100621092 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = SUEQ2SZ2L5;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
@@ -1406,7 +1452,6 @@
 					};
 					29C9327D1CD76FB800283FC5 = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = SUEQ2SZ2L5;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1630,6 +1675,7 @@
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */,
 				29B876B01CD70B2800FC07DA /* RTMPConnection.swift in Sources */,
+				2CF607C42529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */,
 				BC4DAEB12479851D005EFD57 /* FilenameUtil.swift in Sources */,
 				295891221EEB8EC500CE51E1 /* FLVAVCPacketType.swift in Sources */,
 				29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */,
@@ -1681,6 +1727,7 @@
 				295747911E37AC1000EF056E /* RTMPStreamDelegate.swift in Sources */,
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				2916196C1E7F0768009FB344 /* CMFormatDescription+Extension.swift in Sources */,
+				2CF607CC2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
@@ -1750,6 +1797,7 @@
 				29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
 				BC20DF2F2503749C007BC608 /* HKPictureInPicureControllerImpl.swift in Sources */,
+				2CF607C52529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */,
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
 				BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
@@ -1818,6 +1866,7 @@
 				2958910F1EEB8D3C00CE51E1 /* FLVVideoCodec.swift in Sources */,
 				295891021EEB7AFC00CE51E1 /* ScalingMode.swift in Sources */,
 				29B877141CD70D5A00FC07DA /* RTMPMessage.swift in Sources */,
+				2CF607CD2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */,
 				29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */,
 				29EA87E31E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				29B877171CD70D5A00FC07DA /* RTMPSharedObject.swift in Sources */,
@@ -1841,10 +1890,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CF6085C252A250800B9BC5E /* MTLTexture+Extension.swift in Sources */,
+				2CF60843252A24CA00B9BC5E /* PassThroughFilter.swift in Sources */,
 				291468191E581C8F00E619BA /* Preference.swift in Sources */,
 				BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */,
 				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
+				2CF6085D252A250800B9BC5E /* CVPixelBuffer+Helper.swift in Sources */,
 				296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */,
+				2CF60831252A24C100B9BC5E /* CompositionFilter.swift in Sources */,
+				2CF6084C252A24CE00B9BC5E /* PassThrough.metal in Sources */,
+				2CF60855252A24D200B9BC5E /* Texture.metal in Sources */,
+				2CF6083E252A24C600B9BC5E /* VertexIn.swift in Sources */,
 				BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */,
 				2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */,
 				295074311E462105007F15A4 /* PreferenceViewController.swift in Sources */,
@@ -1870,6 +1926,7 @@
 				BC55826A240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				294B2D3423785E3800CE7BDC /* CircularBuffer.swift in Sources */,
 				BC20DF32250374A8007BC608 /* HKPictureInPicureController.swift in Sources */,
+				2CF607C62529B51F00B9BC5E /* MultiVideoIOComponent.swift in Sources */,
 				29EB3E1F1ED059F7001CAE8B /* RTMPChunk.swift in Sources */,
 				29EB3DFA1ED057A1001CAE8B /* CMVideoFormatDescription+Extension.swift in Sources */,
 				29EB3E071ED05867001CAE8B /* NALUnit.swift in Sources */,
@@ -1892,6 +1949,7 @@
 				29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */,
 				BC44A1AB23D31E92002D4297 /* AudioConverter.AudioBuffer.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
+				2CF607CE2529B5AC00B9BC5E /* MultiVideoIOComponent+Extension.swift in Sources */,
 				29DF20642312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
 				29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */,
 				29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */,
@@ -2049,7 +2107,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Screencast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2075,7 +2133,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Screencast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2141,7 +2199,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2195,7 +2253,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
@@ -2223,7 +2281,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Platforms/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2236,6 +2294,7 @@
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2257,7 +2316,7 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Platforms/iOS/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2268,6 +2327,7 @@
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2388,7 +2448,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2413,7 +2473,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Info.plist";
@@ -2553,7 +2613,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2578,7 +2638,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = 2RNKT55WYW;
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

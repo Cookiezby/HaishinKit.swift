@@ -18,6 +18,10 @@ open class NetStream: NSObject {
         get { mixer.videoIO.context }
         set { mixer.videoIO.context = newValue }
     }
+    
+    open var testVideoIO: MultiVideoIOComponent {
+        mixer.videoIO
+    }
 
 #if os(iOS) || os(macOS)
     open var torch: Bool {
@@ -83,6 +87,17 @@ open class NetStream: NSObject {
             }
         }
     }
+
+    open func attachComposite(compositeRender: @escaping (MTLTexture, MTLTexture) -> CVPixelBuffer?, onError: ((_ error: NSError) -> Void)? = nil) {
+        lockQueue.async {
+            self.mixer.videoIO.compositeRender = compositeRender
+        }
+    }
+    
+    open func setMetalDevice(metalDevice: MTLDevice) {
+        self.mixer.videoIO.metalDevice = metalDevice
+    }
+    
 
     open func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
         mixer.videoIO.focusPointOfInterest = focus

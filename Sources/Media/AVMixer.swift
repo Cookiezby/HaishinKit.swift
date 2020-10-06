@@ -11,6 +11,7 @@ protocol AVMixerDelegate: class {
     func didOutputVideo(_ buffer: CMSampleBuffer)
 }
 
+@available(iOSApplicationExtension 13.0, *)
 public class AVMixer {
     public static let bufferEmpty: Notification.Name = .init("AVMixerBufferEmpty")
 
@@ -111,6 +112,17 @@ public class AVMixer {
             _session = newValue
         }
     }
+    
+    private var _multiCameraSession: AVCaptureMultiCamSession?
+    public var multiCameraSession: AVCaptureMultiCamSession {
+        get {
+            if _multiCameraSession == nil {
+                _multiCameraSession = AVCaptureMultiCamSession()
+            }
+            return _multiCameraSession!
+        }
+    }
+    
     #endif
 
     var settings: Setting<AVMixer, Option> = [:] {
@@ -138,10 +150,10 @@ public class AVMixer {
         return _audioIO!
     }
 
-    private var _videoIO: VideoIOComponent?
-    var videoIO: VideoIOComponent! {
+    private var _videoIO: MultiVideoIOComponent?
+    var videoIO: MultiVideoIOComponent! {
         if _videoIO == nil {
-            _videoIO = VideoIOComponent(mixer: self)
+            _videoIO = MultiVideoIOComponent(mixer: self)
         }
         return _videoIO!
     }
@@ -203,7 +215,7 @@ extension AVMixer {
 extension AVMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
-        .init(session.isRunning)
+        .init(multiCameraSession.isRunning)
     }
 
     public func startRunning() {
@@ -211,7 +223,7 @@ extension AVMixer: Running {
             return
         }
         DispatchQueue.global(qos: .userInteractive).async {
-            self.session.startRunning()
+            self.multiCameraSession.startRunning()
         }
     }
 
@@ -219,7 +231,7 @@ extension AVMixer: Running {
         guard isRunning.value else {
             return
         }
-        session.stopRunning()
+        multiCameraSession.stopRunning()
     }
 }
 #else

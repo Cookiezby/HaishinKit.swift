@@ -509,13 +509,13 @@ open class RTMPStream: NetStream {
     func createMetaData() -> ASObject {
         metadata.removeAll()
 #if os(iOS) || os(macOS)
-        if let _: AVCaptureInput = mixer.videoIO.input {
-            metadata["width"] = mixer.videoIO.encoder.width
-            metadata["height"] = mixer.videoIO.encoder.height
-            metadata["framerate"] = mixer.videoIO.fps
-            metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
-            metadata["videodatarate"] = mixer.videoIO.encoder.bitrate / 1000
-        }
+//        if let _: AVCaptureInput = mixer.videoIO.input {
+//            metadata["width"] = mixer.videoIO.encoder.width
+//            metadata["height"] = mixer.videoIO.encoder.height
+//            metadata["framerate"] = mixer.videoIO.fps
+//            metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
+//            metadata["videodatarate"] = mixer.videoIO.encoder.bitrate / 1000
+//        }
         if let _: AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate / 1000
