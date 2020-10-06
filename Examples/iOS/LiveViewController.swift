@@ -58,7 +58,7 @@ final class LiveViewController: UIViewController {
     private var retryCount: Int = 0
 
     let metalDevice: MTLDevice = MTLCreateSystemDefaultDevice()!
-    private let videoSize = CGSize(width: 180, height: 320)
+    private let videoSize = CGSize(width: 360, height: 640)
     private lazy var compositionFilter: CompositionCameraFilter = {
         return CompositionCameraFilter(device: metalDevice, outputSize: videoSize)
     }()
@@ -92,8 +92,8 @@ final class LiveViewController: UIViewController {
 //            .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
 //        ]
         rtmpStream.videoSettings = [
-            .width: 180,
-            .height: 320
+            .width: 360,
+            .height: 640
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 

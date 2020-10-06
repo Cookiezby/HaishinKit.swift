@@ -261,7 +261,7 @@ extension MultiVideoIOComponent {
         }
 
         encoder.encodeImageBuffer(
-            imageBuffer ?? buffer,
+            buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
