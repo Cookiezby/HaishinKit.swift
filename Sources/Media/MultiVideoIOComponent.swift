@@ -44,6 +44,8 @@ public final class MultiVideoIOComponent: IOComponent {
     private var frontCameraVideoDataOutput = AVCaptureVideoDataOutput()
     public var frontCameraTexture: MTLTexture?
     
+    private var lastSampleBuffer: CMSampleBuffer?
+    public var lastPixelBuffer: CVPixelBuffer?
     
     var compositeRender: ((MTLTexture, MTLTexture) -> CVPixelBuffer?)?
 
@@ -317,6 +319,13 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             frontCameraTimeStamp = sampleBuffer.presentationTimeStamp
             frontCameraDuration = sampleBuffer.duration
             //encodeSampleBuffer(sampleBuffer)
+            var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
+            if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
+                if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {
+                    encodeSampleBuffer(newSampleBuffer)
+                }
+                
+            }
         }
         
     

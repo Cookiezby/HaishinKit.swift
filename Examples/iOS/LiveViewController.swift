@@ -91,9 +91,14 @@ final class LiveViewController: UIViewController {
 //            .continuousExposure: true
 //            .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
 //        ]
+        
+        rtmpStream.captureSettings = [
+            .fps: 24
+        ]
+        
         rtmpStream.videoSettings = [
-            .width: 360,
-            .height: 640
+            .width: 720,
+            .height: 1280
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 
@@ -329,7 +334,8 @@ extension LiveViewController: MTKViewDelegate {
       
         if let emptyPixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height)),
            let pixelBuffer = compositionFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
-            rtmpStream.testVideoIO.encode(buffer: pixelBuffer)
+            //rtmpStream.testVideoIO.encode(buffer: pixelBuffer)
+            rtmpStream.testVideoIO.lastPixelBuffer = pixelBuffer
         }
 
     }
