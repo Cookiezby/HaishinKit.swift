@@ -49,7 +49,8 @@ public final class MultiVideoIOComponent: IOComponent {
     
     var compositeRender: ((MTLTexture, MTLTexture) -> CVPixelBuffer?)?
 
-
+    public var faceDetector = FaceDetector()
+    
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
     var context: CIContext? {
@@ -318,7 +319,7 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             frontCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
             frontCameraTimeStamp = sampleBuffer.presentationTimeStamp
             frontCameraDuration = sampleBuffer.duration
-            //encodeSampleBuffer(sampleBuffer)
+            faceDetector.detect(sampleBuffer: sampleBuffer)
             var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
             if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
                 if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {

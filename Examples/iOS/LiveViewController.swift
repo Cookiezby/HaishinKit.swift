@@ -62,6 +62,9 @@ final class LiveViewController: UIViewController {
     private lazy var compositionFilter: CompositionCameraFilter = {
         return CompositionCameraFilter(device: metalDevice, outputSize: videoSize)
     }()
+    private lazy var cutFaceFilter: CutFaceFilter = {
+        return CutFaceFilter(device: metalDevice)
+    }()
     
     private lazy var testFilter: TestFilter = {
         return TestFilter(device: metalDevice, outputSize: videoSize)
@@ -133,9 +136,9 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-//        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-//            logger.warn(error.description)
-//        }
+        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+            logger.warn(error.description)
+        }
 //        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
 //            logger.warn(error.description)
 //        }
@@ -328,7 +331,11 @@ extension LiveViewController: MTKViewDelegate {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
         guard let frontTexture = rtmpStream.testVideoIO.frontCameraTexture else { return }
         guard let backTexture = rtmpStream.testVideoIO.backCameraTexture else { return }
-        compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: frontTexture)
+        
+        cutFaceFilter.render(commandBuffer: commandBuffer,
+                             faceRect: rtmpStream.testVideoIO.faceDetector.lastBoundingBox.enlarge(top: 0.24, left: 0.18, right: 0.18, bottom: 0.24),
+                             inputTexture: frontTexture)
+        compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: cutFaceFilter.outputTexture)
         //render(texture: compositionFilter.outputTexture, withCommandBuffer: commandBuffer, device: metalDevice)
         commandBuffer.commit()
       
