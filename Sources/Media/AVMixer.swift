@@ -84,28 +84,14 @@ public class AVMixer {
         get { videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
-
-    private var _session: AVCaptureSession?
-    public var session: AVCaptureSession {
+    
+    private var _session: AVCaptureMultiCamSession?
+    public var session: AVCaptureMultiCamSession {
         get {
             if _session == nil {
-                _session = AVCaptureSession()
-                _session?.sessionPreset = .default
+                _session = AVCaptureMultiCamSession()
             }
             return _session!
-        }
-        set {
-            _session = newValue
-        }
-    }
-    
-    private var _multiCameraSession: AVCaptureMultiCamSession?
-    public var multiCameraSession: AVCaptureMultiCamSession {
-        get {
-            if _multiCameraSession == nil {
-                _multiCameraSession = AVCaptureMultiCamSession()
-            }
-            return _multiCameraSession!
         }
     }
     
@@ -201,7 +187,7 @@ extension AVMixer {
 extension AVMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
-        .init(multiCameraSession.isRunning)
+        .init(session.isRunning)
     }
 
     public func startRunning() {
@@ -209,7 +195,7 @@ extension AVMixer: Running {
             return
         }
         DispatchQueue.global(qos: .userInteractive).async {
-            self.multiCameraSession.startRunning()
+            self.session.startRunning()
         }
     }
 
@@ -217,7 +203,7 @@ extension AVMixer: Running {
         guard isRunning.value else {
             return
         }
-        multiCameraSession.stopRunning()
+        session.stopRunning()
     }
 }
 #else

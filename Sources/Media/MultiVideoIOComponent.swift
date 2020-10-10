@@ -380,7 +380,7 @@ extension MultiVideoIOComponent: DisplayLinkedQueueDelegate {
 
 extension MultiVideoIOComponent {
     private func configureBackCamera() -> Bool {
-        guard let session = mixer?.multiCameraSession else { return false }
+        guard let session = mixer?.session else { return false }
         
         session.beginConfiguration()
         defer { session.commitConfiguration() }
@@ -432,7 +432,7 @@ extension MultiVideoIOComponent {
     }
     
     func configureFrontCamera() -> Bool {
-        guard let session = mixer?.multiCameraSession else { return false }
+        guard let session = mixer?.session else { return false }
         
         session.beginConfiguration()
         defer {
