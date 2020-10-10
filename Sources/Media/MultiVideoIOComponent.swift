@@ -116,7 +116,6 @@ public final class MultiVideoIOComponent: IOComponent {
         didSet {}
     }
     
-
     var position: AVCaptureDevice.Position = .back
 
     var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
@@ -221,8 +220,6 @@ public final class MultiVideoIOComponent: IOComponent {
 }
 
 extension MultiVideoIOComponent {
-
-    
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
@@ -263,26 +260,7 @@ extension MultiVideoIOComponent {
             duration: sampleBuffer.duration
         )
 
-        //mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
-    }
-    
-    public func encode(buffer: CVPixelBuffer) {
-        guard let timeStamp = frontCameraTimeStamp else { return }
-        guard let duration = frontCameraDuration else { return }
-        
-        if renderer != nil || !effects.isEmpty {
-            let image = CIImage(cvPixelBuffer: buffer)
-            extent = image.extent
-            renderer?.render(image: image)
-        }
-        
-        encoder.encodeImageBuffer(
-            buffer,
-            presentationTimeStamp: timeStamp,
-            duration: duration
-        )
-        
-        //mixer?.recorder.appendPixelBuffer(buffer, withPresentationTime: timeStamp)
+        mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
     }
 }
 
@@ -313,8 +291,6 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             frontCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
             frontCameraTimeStamp = sampleBuffer.presentationTimeStamp
             frontCameraDuration = sampleBuffer.duration
-            //faceDetector.detect(sampleBuffer: sampleBuffer)
-            //encodeSampleBuffer(sampleBuffer)
             var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
             if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
                 if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {
@@ -376,7 +352,6 @@ extension MultiVideoIOComponent: DisplayLinkedQueueDelegate {
         mixer?.didBufferEmpty(self)
     }
 }
-
 
 extension MultiVideoIOComponent {
     private func configureBackCamera() -> Bool {
@@ -509,26 +484,4 @@ extension CMFormatDescription {
     CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &formatDescription)
     return formatDescription
   }
-}
-
-
-extension MTLTexture {
-    func threadGroupCount() -> MTLSize {
-        return MTLSizeMake(8, 8, 1)
-    }
-    
-    func threadGroups() -> MTLSize {
-        let groupCount = threadGroupCount()
-        return MTLSizeMake(Int(self.width) / groupCount.width, Int(self.height) / groupCount.height, 1)
-    }
-    
-    func toPixelBuffer(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-        CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
-        let emptyBufferBytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer)
-        let baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer)
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
-        guard let noNilBaseAddress = baseAddress else { return nil }
-        getBytes(noNilBaseAddress, bytesPerRow: emptyBufferBytesPerRow, from: MTLRegionMake2D(0, 0, width, height), mipmapLevel: 0)
-        return pixelBuffer
-    }
 }
