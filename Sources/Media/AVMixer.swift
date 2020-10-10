@@ -23,7 +23,6 @@ public class AVMixer {
     #if os(iOS) || os(macOS)
     public enum Option: String, KeyPathRepresentable, CaseIterable {
         case fps
-        case sessionPreset
         case isVideoMirrored
         case continuousAutofocus
         case continuousExposure
@@ -36,8 +35,6 @@ public class AVMixer {
             switch self {
             case .fps:
                 return \AVMixer.fps
-            case .sessionPreset:
-                return \AVMixer.sessionPreset
             case .continuousAutofocus:
                 return \AVMixer.continuousAutofocus
             case .continuousExposure:
@@ -86,17 +83,6 @@ public class AVMixer {
     var continuousAutofocus: Bool {
         get { videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
-    }
-
-    var sessionPreset: AVCaptureSession.Preset = .default {
-        didSet {
-            guard sessionPreset != oldValue else {
-                return
-            }
-            session.beginConfiguration()
-            session.sessionPreset = sessionPreset
-            session.commitConfiguration()
-        }
     }
 
     private var _session: AVCaptureSession?
