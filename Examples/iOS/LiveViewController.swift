@@ -75,6 +75,14 @@ final class LiveViewController: UIViewController {
     }()
     private var pixelBuffer: CVPixelBuffer?
     
+    private lazy var textureCache: CVMetalTextureCache? = {
+        var textureCache: CVMetalTextureCache?
+        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, self.metalDevice, nil, &textureCache) != kCVReturnSuccess {
+            fatalError("Unable to allocate texture cache")
+        }
+        return textureCache
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         initRenderPipelineState()
@@ -318,16 +326,23 @@ extension LiveViewController: MTKViewDelegate {
     
     func draw(in view: MTKView) {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
-        guard let frontTexture = rtmpStream.testVideoIO.frontCameraTexture else { return }
-        guard let backTexture = rtmpStream.testVideoIO.backCameraTexture else { return }
+        guard let frontSampleBuffer = rtmpStream.frontCameraSampleBuffer else { return }
+        guard let frontTexture = sampleBufferToTexture(sampleBuffer: frontSampleBuffer) else { return }
+        guard let backSampleBuffer = rtmpStream.backCameraSampleBuffer else { return }
+        guard let backTexture = sampleBufferToTexture(sampleBuffer: backSampleBuffer) else { return }
         compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: frontTexture)
         commandBuffer.commit()
       
         if let emptyPixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height)),
            let pixelBuffer = compositionFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
-            rtmpStream.testVideoIO.lastPixelBuffer = pixelBuffer
+            rtmpStream.updateSessionLastPixelBuffer(pixelBuffer)
         }
-
+    }
+    
+    private func sampleBufferToTexture(sampleBuffer: CMSampleBuffer) -> MTLTexture? {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+        guard let textureCache = self.textureCache else { return nil }
+        return createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
     }
     
     private func render(texture: MTLTexture, withCommandBuffer commandBuffer: MTLCommandBuffer, device: MTLDevice) {
@@ -347,4 +362,37 @@ extension LiveViewController: MTKViewDelegate {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
+    
+    
+    private func createMetalTextureFromPixelBuffer(_ pixelBuffer: CVPixelBuffer, textureCache: CVMetalTextureCache) -> MTLTexture? {
+        CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        var cvTextureOut: CVMetalTexture?
+        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, pixelBuffer, nil, .bgra8Unorm, width, height, 0, &cvTextureOut)
+        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
+            print("failed to create metal texture")
+            return nil
+        }
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        return texture
+    }
+}
+
+
+extension CMSampleBuffer {
+  static func make(from pixelBuffer: CVPixelBuffer, formatDescription: CMFormatDescription, timingInfo: inout CMSampleTimingInfo) -> CMSampleBuffer? {
+    var sampleBuffer: CMSampleBuffer?
+    CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, dataReady: true, makeDataReadyCallback: nil,
+                                       refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &sampleBuffer)
+    return sampleBuffer
+  }
+}
+
+extension CMFormatDescription {
+  static func make(from pixelBuffer: CVPixelBuffer) -> CMFormatDescription? {
+    var formatDescription: CMFormatDescription?
+    CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &formatDescription)
+    return formatDescription
+  }
 }

@@ -19,11 +19,16 @@ open class NetStream: NSObject {
         set { mixer.videoIO.context = newValue }
     }
     
+    public var frontCameraSampleBuffer: CMSampleBuffer? {
+        mixer.videoIO.frontCameraSampleBuffer
+    }
     
+    public var backCameraSampleBuffer: CMSampleBuffer? {
+        mixer.videoIO.backCameraSampleBuffer
+    }
     
-
-    open var testVideoIO: MultiVideoIOComponent {
-        mixer.videoIO
+    public func updateSessionLastPixelBuffer(_ pixelBuffer: CVPixelBuffer) {
+        mixer.videoIO.lastPixelBuffer = pixelBuffer
     }
 
 #if os(iOS) || os(macOS)

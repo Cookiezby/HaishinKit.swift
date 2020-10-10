@@ -32,12 +32,12 @@ public final class MultiVideoIOComponent: IOComponent {
     //MARK: Back Camera
     private var backCameraDeviceInput: AVCaptureDeviceInput?
     private var backCameraVideoDataOutput = AVCaptureVideoDataOutput()
-    public var backCameraTexture: MTLTexture?
+    public var backCameraSampleBuffer: CMSampleBuffer?
     
     //MARK: Front Camera
     private var frontCameraDeviceInput: AVCaptureDeviceInput?
     private var frontCameraVideoDataOutput = AVCaptureVideoDataOutput()
-    public var frontCameraTexture: MTLTexture?
+    public var frontCameraSampleBuffer: CMSampleBuffer?
     
     public var lastPixelBuffer: CVPixelBuffer?
     
@@ -281,49 +281,20 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     public func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let videoDataOutput = captureOutput as? AVCaptureVideoDataOutput else { return }
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        guard let textureCache = self.textureCache else { return }
         if videoDataOutput == frontCameraVideoDataOutput {
-            frontCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
+            frontCameraSampleBuffer = sampleBuffer
             var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
             if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
                 if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {
                     encodeSampleBuffer(newSampleBuffer)
                 }
-                
             }
         }
         
         if videoDataOutput == backCameraVideoDataOutput {
-            backCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
+            backCameraSampleBuffer = sampleBuffer
         }
     }
-    
-    private func createMetalTextureFromPixelBuffer(_ pixelBuffer: CVPixelBuffer, textureCache: CVMetalTextureCache) -> MTLTexture? {
-        CVPixelBufferLockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
-        let width = CVPixelBufferGetWidth(pixelBuffer)
-        let height = CVPixelBufferGetHeight(pixelBuffer)
-        var cvTextureOut: CVMetalTexture?
-        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, pixelBuffer, nil, .bgra8Unorm, width, height, 0, &cvTextureOut)
-        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
-            print("failed to create metal texture")
-            return nil
-        }
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
-        return texture
-    }
-    
-    func createPixelBuffer(width: Int, height: Int) -> CVPixelBuffer? {
-       var pixelBuffer: CVPixelBuffer?
-       let status = CVPixelBufferCreate(nil, width, height,
-                                        kCVPixelFormatType_32BGRA, nil,
-                                        &pixelBuffer)
-       if status != kCVReturnSuccess {
-           print("Error: could not create resized pixel buffer", status)
-           return nil
-       }
-       return pixelBuffer
-   }
 }
 
 extension MultiVideoIOComponent: VideoDecoderDelegate {
