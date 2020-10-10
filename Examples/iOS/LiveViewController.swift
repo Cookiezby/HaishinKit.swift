@@ -143,17 +143,6 @@ final class LiveViewController: UIViewController {
 //            logger.warn(error.description)
 //        }
         
-        rtmpStream.attachComposite { [weak self] (back, front) -> CVPixelBuffer? in
-            guard let self = self else { return nil }
-            guard let commandBuffer = self.commandQueue.makeCommandBuffer() else { return nil }
-            self.compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: back, foregroundTexture: front)
-            if let emptyPixelBuffer = self.pixelBuffer,
-               let pixelBuffer = self.testFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
-                return pixelBuffer
-            }
-            return nil
-        }
-        
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
     }
@@ -331,17 +320,12 @@ extension LiveViewController: MTKViewDelegate {
         guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
         guard let frontTexture = rtmpStream.testVideoIO.frontCameraTexture else { return }
         guard let backTexture = rtmpStream.testVideoIO.backCameraTexture else { return }
-        
-        cutFaceFilter.render(commandBuffer: commandBuffer,
-                             faceRect: rtmpStream.testVideoIO.faceDetector.lastBoundingBox.enlarge(top: 0.24, left: 0.18, right: 0.18, bottom: 0.24),
-                             inputTexture: frontTexture)
-        compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: cutFaceFilter.outputTexture)
+        compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: frontTexture)
         //render(texture: compositionFilter.outputTexture, withCommandBuffer: commandBuffer, device: metalDevice)
         commandBuffer.commit()
       
         if let emptyPixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height)),
            let pixelBuffer = compositionFilter.outputTexture.toPixelBuffer(pixelBuffer: emptyPixelBuffer) {
-            //rtmpStream.testVideoIO.encode(buffer: pixelBuffer)
             rtmpStream.testVideoIO.lastPixelBuffer = pixelBuffer
         }
 

@@ -88,12 +88,6 @@ open class NetStream: NSObject {
         }
     }
 
-    open func attachComposite(compositeRender: @escaping (MTLTexture, MTLTexture) -> CVPixelBuffer?, onError: ((_ error: NSError) -> Void)? = nil) {
-        lockQueue.async {
-            self.mixer.videoIO.compositeRender = compositeRender
-        }
-    }
-    
     open func setMetalDevice(metalDevice: MTLDevice) {
         self.mixer.videoIO.metalDevice = metalDevice
     }

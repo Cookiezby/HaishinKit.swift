@@ -67,10 +67,10 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
                 return
             }
             if let oldValue: AVCaptureDeviceInput = oldValue {
-                mixer.session.removeInput(oldValue)
+                mixer.multiCameraSession.removeInput(oldValue)
             }
-            if let input: AVCaptureDeviceInput = input, mixer.session.canAddInput(input) {
-                mixer.session.addInput(input)
+            if let input: AVCaptureDeviceInput = input, mixer.multiCameraSession.canAddInput(input) {
+                mixer.multiCameraSession.addInput(input)
             }
         }
     }
@@ -89,7 +89,7 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
             }
             if let output: AVCaptureAudioDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
-                mixer?.session.removeOutput(output)
+                mixer?.multiCameraSession.removeOutput(output)
             }
             _output = newValue
         }
@@ -112,9 +112,9 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
             return
         }
 
-        mixer.session.beginConfiguration()
+        mixer.multiCameraSession.beginConfiguration()
         defer {
-            mixer.session.commitConfiguration()
+            mixer.multiCameraSession.commitConfiguration()
         }
 
         output = nil
@@ -127,9 +127,11 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
 
         input = try AVCaptureDeviceInput(device: audio)
         #if os(iOS)
-        mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+        //mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+        mixer.multiCameraSession.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
-        mixer.session.addOutput(output)
+        //mixer.session.addOutput(output)
+        mixer.multiCameraSession.addOutput(output)
         output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 

@@ -44,13 +44,7 @@ public final class MultiVideoIOComponent: IOComponent {
     private var frontCameraVideoDataOutput = AVCaptureVideoDataOutput()
     public var frontCameraTexture: MTLTexture?
     
-    private var lastSampleBuffer: CMSampleBuffer?
     public var lastPixelBuffer: CVPixelBuffer?
-    
-    var compositeRender: ((MTLTexture, MTLTexture) -> CVPixelBuffer?)?
-
-    public var faceDetector = FaceDetector()
-    
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
     var context: CIContext? {
@@ -319,7 +313,8 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             frontCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
             frontCameraTimeStamp = sampleBuffer.presentationTimeStamp
             frontCameraDuration = sampleBuffer.duration
-            faceDetector.detect(sampleBuffer: sampleBuffer)
+            //faceDetector.detect(sampleBuffer: sampleBuffer)
+            //encodeSampleBuffer(sampleBuffer)
             var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
             if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
                 if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {
@@ -329,7 +324,6 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
         }
         
-    
         if videoDataOutput == backCameraVideoDataOutput {
             backCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
             backCameraTimeStamp = sampleBuffer.presentationTimeStamp
@@ -483,7 +477,7 @@ extension MultiVideoIOComponent {
         session.addOutputWithNoConnections(frontCameraVideoDataOutput)
         frontCameraVideoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
         frontCameraVideoDataOutput.setSampleBufferDelegate(self, queue: dataOutputQueue)
-        //frontCameraVideoDataOutput.alwaysDiscardsLateVideoFrames = true
+        frontCameraVideoDataOutput.alwaysDiscardsLateVideoFrames = true
         
         // Connect the front camera device input to the front camera video data output
         let frontCameraVideoDataOutputConnection = AVCaptureConnection(inputPorts: [frontCameraVideoPort], output: frontCameraVideoDataOutput)
