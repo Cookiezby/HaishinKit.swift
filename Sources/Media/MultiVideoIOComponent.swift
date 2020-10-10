@@ -28,23 +28,19 @@ public final class MultiVideoIOComponent: IOComponent {
         }
         return textureCache
     }()
-    //back camera
     
-    private var backCameraTimeStamp: CMTime?
-    private var backCameraDuration: CMTime?
+    //MARK: Back Camera
     private var backCameraDeviceInput: AVCaptureDeviceInput?
     private var backCameraVideoDataOutput = AVCaptureVideoDataOutput()
     public var backCameraTexture: MTLTexture?
     
-    //front camera
-    
-    private var frontCameraTimeStamp: CMTime?
-    private var frontCameraDuration: CMTime?
+    //MARK: Front Camera
     private var frontCameraDeviceInput: AVCaptureDeviceInput?
     private var frontCameraVideoDataOutput = AVCaptureVideoDataOutput()
     public var frontCameraTexture: MTLTexture?
     
     public var lastPixelBuffer: CVPixelBuffer?
+    
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
     var context: CIContext? {
@@ -289,8 +285,6 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard let textureCache = self.textureCache else { return }
         if videoDataOutput == frontCameraVideoDataOutput {
             frontCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
-            frontCameraTimeStamp = sampleBuffer.presentationTimeStamp
-            frontCameraDuration = sampleBuffer.duration
             var timeInfo = CMSampleTimingInfo(duration: sampleBuffer.duration, presentationTimeStamp: sampleBuffer.presentationTimeStamp, decodeTimeStamp: sampleBuffer.decodeTimeStamp)
             if let lastPixelBuffer = lastPixelBuffer, let formatDescription = CMFormatDescription.make(from: lastPixelBuffer) {
                 if let newSampleBuffer = CMSampleBuffer.make(from: lastPixelBuffer, formatDescription: formatDescription, timingInfo: &timeInfo) {
@@ -302,8 +296,6 @@ extension MultiVideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         if videoDataOutput == backCameraVideoDataOutput {
             backCameraTexture = createMetalTextureFromPixelBuffer(pixelBuffer, textureCache: textureCache)
-            backCameraTimeStamp = sampleBuffer.presentationTimeStamp
-            backCameraDuration = sampleBuffer.duration
         }
     }
     

@@ -321,7 +321,6 @@ extension LiveViewController: MTKViewDelegate {
         guard let frontTexture = rtmpStream.testVideoIO.frontCameraTexture else { return }
         guard let backTexture = rtmpStream.testVideoIO.backCameraTexture else { return }
         compositionFilter.render(commandBuffer: commandBuffer, backgroundTexture: backTexture, foregroundTexture: frontTexture)
-        //render(texture: compositionFilter.outputTexture, withCommandBuffer: commandBuffer, device: metalDevice)
         commandBuffer.commit()
       
         if let emptyPixelBuffer = createPixelBuffer(width: Int(videoSize.width), height: Int(videoSize.height)),

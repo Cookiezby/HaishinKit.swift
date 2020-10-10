@@ -19,6 +19,9 @@ open class NetStream: NSObject {
         set { mixer.videoIO.context = newValue }
     }
     
+    
+    
+
     open var testVideoIO: MultiVideoIOComponent {
         mixer.videoIO
     }
