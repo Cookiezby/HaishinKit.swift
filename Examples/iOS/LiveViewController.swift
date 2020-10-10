@@ -239,7 +239,7 @@ final class LiveViewController: UIViewController {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
             rtmpStream!.publish(Preference.defaultInstance.streamName!)
-            //sharedObject!.connect(rtmpConnection)
+            // sharedObject!.connect(rtmpConnection)
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= LiveViewController.maxRetryCount else {
                 return
@@ -306,12 +306,12 @@ final class LiveViewController: UIViewController {
 
     @objc
     private func didEnterBackground(_ notification: Notification) {
-        rtmpStream.receiveVideo = false
+        // rtmpStream.receiveVideo = false
     }
 
     @objc
     private func didBecomeActive(_ notification: Notification) {
-        rtmpStream.receiveVideo = true
+        // rtmpStream.receiveVideo = true
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
