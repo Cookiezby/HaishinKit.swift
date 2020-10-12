@@ -19,16 +19,6 @@ public final class MultiVideoIOComponent: IOComponent {
     private let sessionQueue = DispatchQueue(label: "camera.multisession")
     private let dataOutputQueue = DispatchQueue(label: "camera.output")
     
-    var metalDevice: MTLDevice!
-
-    private lazy var textureCache: CVMetalTextureCache? = {
-        var textureCache: CVMetalTextureCache?
-        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, self.metalDevice, nil, &textureCache) != kCVReturnSuccess {
-            fatalError("Unable to allocate texture cache")
-        }
-        return textureCache
-    }()
-    
     //MARK: Back Camera
     private var backCameraDeviceInput: AVCaptureDeviceInput?
     private var backCameraVideoDataOutput = AVCaptureVideoDataOutput()

@@ -91,8 +91,7 @@ final class LiveViewController: UIViewController {
         metalView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
         
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpStream.setMetalDevice(metalDevice: self.metalDevice)
-        
+
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.orientation = orientation
         }

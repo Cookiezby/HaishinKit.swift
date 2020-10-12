@@ -96,11 +96,6 @@ open class NetStream: NSObject {
         }
     }
 
-    open func setMetalDevice(metalDevice: MTLDevice) {
-        self.mixer.videoIO.metalDevice = metalDevice
-    }
-    
-
     open func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
